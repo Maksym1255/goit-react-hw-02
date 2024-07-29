@@ -4,14 +4,15 @@ import Description from "./components/Description";
 import Feedback from "./components/Feedback";
 import Options from "./components/Options";
 
-function App() {
+const App = () => {
   const feedbackTypeInitial = JSON.parse(
-    window.localStorage.getItem("feedbackCount", {
-      good: 0,
-      neutral: 0,
-      bad: 0,
-    })
-  );
+    localStorage.getItem("feedbackCount")
+  ) || {
+    good: 0,
+    neutral: 0,
+    bad: 0,
+  };
+
   const [feedbackCount, setFeedbackCount] = useState(feedbackTypeInitial);
 
   useEffect(() => {
@@ -19,18 +20,20 @@ function App() {
   }, [feedbackCount]);
 
   const onFeedbackCountAdd = (feedbackName) => {
-    setFeedbackCount({
-      ...feedbackCount,
-      [feedbackName]: feedbackCount[feedbackName] + 1,
-    });
+    setFeedbackCount((feedbackType) => ({
+      ...feedbackType,
+      [feedbackName]: feedbackType[feedbackName] + 1,
+    }));
+  };
+
+  const resetFeedback = () => {
+    setFeedbackCount({ good: 0, neutral: 0, bad: 0 });
   };
 
   const feedbackTotal =
     feedbackCount.good + feedbackCount.neutral + feedbackCount.bad;
 
-  const resetFeedback = () => {
-    setFeedbackCount({ good: 0, neutral: 0, bad: 0 });
-  };
+  console.log(feedbackTotal);
 
   return (
     <div>
@@ -48,11 +51,9 @@ function App() {
           </section>
           <section>
             <Feedback
-              good={feedbackCount.good}
-              neutral={feedbackCount.neutral}
-              bad={feedbackCount.bad}
-              total={feedbackTotal}
-              onFeedbackCountAdd={onFeedbackCountAdd}
+              feedbackCount={feedbackCount}
+              feedbackTotal={feedbackTotal}
+              // onFeedbackCountAdd={onFeedbackCountAdd}
             />
           </section>
         </div>
@@ -64,6 +65,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;
