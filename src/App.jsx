@@ -3,6 +3,7 @@ import "./App.css";
 import Description from "./components/Description";
 import Feedback from "./components/Feedback";
 import Options from "./components/Options";
+import Notification from "./components/Notification";
 
 const App = () => {
   const feedbackTypeInitial = JSON.parse(
@@ -30,8 +31,17 @@ const App = () => {
     setFeedbackCount({ good: 0, neutral: 0, bad: 0 });
   };
 
-  const feedbackTotal =
-    feedbackCount.good + feedbackCount.neutral + feedbackCount.bad;
+  const { good, neutral, bad } = feedbackCount;
+
+  const feedbackTotal = good + neutral + bad;
+
+  const positivFeedback = Math.round(((good + neutral) / feedbackTotal) * 100);
+
+  const message = (
+    <p>
+      <b>No feedback yet</b>
+    </p>
+  );
 
   return (
     <div>
@@ -51,14 +61,14 @@ const App = () => {
             <Feedback
               feedbackCount={feedbackCount}
               feedbackTotal={feedbackTotal}
-              // onFeedbackCountAdd={onFeedbackCountAdd}
+              positivFeedback={positivFeedback}
             />
           </section>
         </div>
       ) : (
         <div>
           <Options onFeedbackCountAdd={onFeedbackCountAdd} />
-          <p>No feedback yet</p>
+          <Notification message={message} />
         </div>
       )}
     </div>
