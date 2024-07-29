@@ -33,8 +33,6 @@ const App = () => {
   const feedbackTotal =
     feedbackCount.good + feedbackCount.neutral + feedbackCount.bad;
 
-  console.log(feedbackTotal);
-
   return (
     <div>
       <section>
