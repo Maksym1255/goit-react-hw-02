@@ -1,35 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import "./App.css";
+import Description from "./components/Description";
+import Feedback from "./components/Feedback";
+import Options from "./components/Options";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const feedbackTypeInitial = JSON.parse(
+    localStorage.getItem("feedbackCount") || { good: 0, neutral: 0, bad: 0 }
+  );
+
+  const [feedbackCount, setFeedbackCount] = useState(feedbackTypeInitial);
+
+  useEffect(() => {
+    localStorage.setItem("feedbackCount", JSON.stringify(feedbackCount));
+  }, [feedbackCount]);
+
+  const onFeedbackCountAdd = (feedbackName) => {
+    setFeedbackCount({
+      ...feedbackCount,
+      [feedbackName]: feedbackCount[feedbackName] + 1,
+    });
+  };
+
+  const feedbackTotal =
+    feedbackCount.good + feedbackCount.neutral + feedbackCount.bad;
+
+  const resetFeedback = () => {
+    setFeedbackCount({ good: 0, neutral: 0, bad: 0 });
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <section>
+        <Description />
+      </section>
+      {feedbackTotal > 0 ? (
+        <div>
+          <section>
+            <Options
+              onFeedbackCountAdd={onFeedbackCountAdd}
+              feedbackTotal={feedbackTotal}
+              resetFeedback={resetFeedback}
+            />
+          </section>
+          <section>
+            <Feedback
+              good={feedbackCount.good}
+              neutral={feedbackCount.neutral}
+              bad={feedbackCount.bad}
+              total={feedbackTotal}
+              onFeedbackCountAdd={onFeedbackCountAdd}
+            />
+          </section>
+        </div>
+      ) : (
+        <div>
+          <Options onFeedbackCountAdd={onFeedbackCountAdd} />
+          <p>No feedback yet</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
