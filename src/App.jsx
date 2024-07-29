@@ -6,9 +6,12 @@ import Options from "./components/Options";
 
 function App() {
   const feedbackTypeInitial = JSON.parse(
-    localStorage.getItem("feedbackCount") || { good: 0, neutral: 0, bad: 0 }
+    window.localStorage.getItem("feedbackCount", {
+      good: 0,
+      neutral: 0,
+      bad: 0,
+    })
   );
-
   const [feedbackCount, setFeedbackCount] = useState(feedbackTypeInitial);
 
   useEffect(() => {
